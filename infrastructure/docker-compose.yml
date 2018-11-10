@@ -1,14 +1,26 @@
 version: "3.7"
 
 networks:
-  zab_bridge:
+  dtsp_bridge:
 
 services:
-  zabbix-db-mysql:
+
+  dtsp-db-mysql:
     build:
-      context: ./zabbix-db-mysql
-    image: dtsp/zabbix-db-mysql:latest
+      context: ./dtsp-db-mysql
+    image: dtsp/dtsp-db-mysql:latest
     ports:
       - 3307:3306
     networks:
-      - zab_bridge
+      - dtsp_bridge
+
+  dtsp-zabbix-server:
+    image: dtsp/dtsp-zabbix-server
+    networks:
+      - dtsp_bridge
+    environment:
+     - DB_SERVER_HOST=dtsp-db-mysql
+     - DB_SERVER_PORT=3307
+     - MYSQL_USER=zabbix
+     - MYSQL_PASSWORD=zabbix
+     - MYSQL_DATABASE=zabbix
